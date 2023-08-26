@@ -45,6 +45,8 @@ class FieldElement:
     def __mul__(self, other):
         if self.prime != other.prime:
             raise TypeError('Cannot multiply two numbers in different Fields')
+        num = (self.num * other.num) % self.prime
+        return self.__class__(num, self.prime)
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         # We return an element of the same class
@@ -65,6 +67,17 @@ class FieldElement:
         # this means:
         # 1/n == pow(n, p-2, p)
         # We return an element of the same class
+
+        # Fet per ChatGPT
+        # Calculate the modular inverse of other using Fermat's Little Theorem
+        # If other is represented by 'b', the modular inverse is 'b^(p-2) % p'
+        inverse = pow(other.num, self.prime - 2, self.prime)
+        # Multiply self by the modular inverse of other
+        # This is equivalent to dividing by other in the finite field
+        result_num = (self.num * inverse) % self.prime
+
+        # Create and return a new instance of the same class with the result
+        return self.__class__(result_num, self.prime)
         raise NotImplementedError
 
 
